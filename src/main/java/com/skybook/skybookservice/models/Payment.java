@@ -17,7 +17,7 @@ public class Payment {
     Long bookingId;
     BigDecimal amount;
     String currency;
-    Long paymentId;
-    PaymentStatus stripePaymentStatus;
+    String stripePaymentId;
+    PaymentStatus status;
     LocalDateTime paidAt;
 }

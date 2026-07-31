@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    @SequenceGenerator(name = "user_seq", sequenceName = "user_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "user_seq", sequenceName = "users_id_seq", allocationSize = 1)
     Long id;
     @Column(nullable = false)
     String name;
@@ -33,6 +33,7 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     LocalDateTime createdAt;
 
+    @PrePersist
     protected void onCreate(){
         this.createdAt = LocalDateTime.now();
         if(this.isActive == null){

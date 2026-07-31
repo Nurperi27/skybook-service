@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "flight_seq")
-    @SequenceGenerator(name = "flight_seq", sequenceName = "flight_flight_seq", allocationSize = 1)
+    @SequenceGenerator(name = "flight_seq", sequenceName = "flights_id_seq", allocationSize = 1)
     Long id;
     @Column(name = "flight_number", nullable = false)
     String flightNumber;
