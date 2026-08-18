@@ -15,7 +15,7 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ExceptionResponse {
-    HttpStatus status;
+    int status;
     String exceptionName;
     String message;
     LocalDateTime timestamp;

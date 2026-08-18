@@ -30,7 +30,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             message = "Требуется авторизация";
         }
 
-        ExceptionResponse exceptionResponse = ExceptionResponse.builder().status(HttpStatus.UNAUTHORIZED).exceptionName(authException.getClass().getSimpleName()).message(message).timestamp(LocalDateTime.now()).build();
+        ExceptionResponse exceptionResponse = ExceptionResponse.builder().status(HttpStatus.UNAUTHORIZED.value()).exceptionName(authException.getClass().getSimpleName()).message(message).timestamp(LocalDateTime.now()).build();
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");

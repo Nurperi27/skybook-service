@@ -27,7 +27,7 @@ public class PaymentRepository {
 
     public Payment save(Payment payment) {
         String sql = """
-                insert into Payment (booking_id, amount, currency, stripe_payment_id, status) values (?, ?, ?, ?, ?);
+                insert into payments (booking_id, amount, currency, stripe_payment_id, status) values (?, ?, ?, ?, ?);
                 """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -45,17 +45,17 @@ public class PaymentRepository {
     }
 
     public Optional<Payment> findById(Long id) {
-        String sql = "select * from payment where id = ?;";
+        String sql = "select * from payments where id = ?;";
         return jdbcTemplate.query(sql, paymentRowMapper, id).stream().findFirst();
     }
 
     public Optional<Payment> findByBookingId(Long bookingId) {
-        String sql = "select * from payment where booking_id = ?;";
+        String sql = "select * from payments where booking_id = ?;";
         return jdbcTemplate.query(sql, paymentRowMapper, bookingId).stream().findFirst();
     }
 
     //Обновление после успешной оплаты через Stripe
-    public void confirmPayment(String id, String stripePaymentId) {
+    public void confirmPayment(Long id, String stripePaymentId) {
         String sql = "update payments set status = ?, stripe_payment_id = ?, paid_at = ? where id = ?;";
         jdbcTemplate.update(sql, PaymentStatus.CONFIRMED.name(), stripePaymentId, LocalDateTime.now(), id);
     }
