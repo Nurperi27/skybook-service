@@ -1,7 +1,9 @@
 package com.skybook.skybookservice.controller;
 
+import com.skybook.skybookservice.dto.request.LoginRequest;
 import com.skybook.skybookservice.dto.request.RegisterRequest;
 import com.skybook.skybookservice.dto.response.AuthResponse;
+import com.skybook.skybookservice.dto.response.TokenResponse;
 import com.skybook.skybookservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +23,10 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(registerRequest));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(userService.login(loginRequest));
     }
 }
