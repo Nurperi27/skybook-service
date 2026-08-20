@@ -1,4 +1,7 @@
 package com.skybook.skybookservice.dto.response;
 
-public record AuthResponse(String message, Long userId) {
+import lombok.Builder;
+
+@Builder
+public record AuthResponse(String message, String token) {
 }
