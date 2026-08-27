@@ -69,4 +69,9 @@ public class BookingServiceImpl implements BookingService {
         bookingRepository.updateStatus(bookingId, BookingStatus.CANCELLED);
         flightRepository.incrementAvailableSeats(booking.getFlightId());
     }
+
+    @Override
+    public List<BookingResponse> getAllBookings() {
+        return bookingRepository.findAll().stream().map(this::toResponse).toList();
+    }
 }

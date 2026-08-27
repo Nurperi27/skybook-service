@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -46,7 +47,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ExceptionResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
-        return builderError(HttpStatus.CONFLICT, "нарушение целостности данных: запись с такими данными уже существует", request.getRequestURI());
+        return builderError(HttpStatus.CONFLICT, "нарушение целостности данных: запись с такими данными уже существует", e.getClass().getSimpleName());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -77,5 +78,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleResourceNotFoundException(ResourceNotFoundException e, HttpServletRequest request) {
         return builderError(HttpStatus.NOT_FOUND,  e.getMessage(), e.getClass().getSimpleName());
+    }
+
+    @ExceptionHandler(FlightAlreadyExists.class)
+    public ResponseEntity<ExceptionResponse> handleFlightAlreadyExists(FlightAlreadyExists e, HttpServletRequest request) {
+        return builderError(HttpStatus.CONFLICT, e.getMessage(), e.getClass().getSimpleName());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
+        return builderError(HttpStatus.BAD_REQUEST, "Неверный формат запроса", e.getClass().getSimpleName());
     }
 }
