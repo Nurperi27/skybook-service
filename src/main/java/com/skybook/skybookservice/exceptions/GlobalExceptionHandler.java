@@ -73,4 +73,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
         return builderError(HttpStatus.BAD_REQUEST, "Нервеный формат параметра '" + e.getName() + "'. Ожидается формат: YYYY-MM-DD", e.getClass().getSimpleName());
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleResourceNotFoundException(ResourceNotFoundException e, HttpServletRequest request) {
+        return builderError(HttpStatus.NOT_FOUND,  e.getMessage(), e.getClass().getSimpleName());
+    }
 }
