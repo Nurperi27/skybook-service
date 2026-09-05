@@ -1,0 +1,1 @@
+alter table payments add column payment_option varchar(20) not null default 'CARD';

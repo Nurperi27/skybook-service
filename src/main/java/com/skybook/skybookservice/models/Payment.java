@@ -1,5 +1,6 @@
 package com.skybook.skybookservice.models;
 
+import com.skybook.skybookservice.enums.PaymentOption;
 import com.skybook.skybookservice.enums.PaymentStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,4 +21,5 @@ public class Payment {
     String stripePaymentId;
     PaymentStatus status;
     LocalDateTime paidAt;
+    PaymentOption paymentOption; //способ оплаты
 }

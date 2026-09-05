@@ -1,5 +1,6 @@
 package com.skybook.skybookservice.repository.template;
 
+import com.skybook.skybookservice.enums.PaymentOption;
 import com.skybook.skybookservice.enums.PaymentStatus;
 import com.skybook.skybookservice.models.Payment;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +21,18 @@ public class PaymentRepository {
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Payment> paymentRowMapper = (rs, rowNum) -> Payment.builder()
-            .id(rs.getLong("id")).bookingId(rs.getLong("booking_id")).amount(rs.getBigDecimal("amount"))
-            .currency(rs.getString("currency")).stripePaymentId(rs.getString("stripe_payment_id"))
-            .status(PaymentStatus.valueOf(rs.getString("status"))).paidAt(rs.getObject("paid_at", LocalDateTime.class))
+            .id(rs.getLong("id")).bookingId(rs.getLong("booking_id"))
+            .amount(rs.getBigDecimal("amount"))
+            .currency(rs.getString("currency"))
+            .stripePaymentId(rs.getString("stripe_payment_id"))
+            .status(PaymentStatus.valueOf(rs.getString("status")))
+            .paymentOption(PaymentOption.valueOf(rs.getString("payment_option")))
+            .paidAt(rs.getObject("paid_at", LocalDateTime.class))
             .build();
 
     public Payment save(Payment payment) {
         String sql = """
-                insert into payments (booking_id, amount, currency, stripe_payment_id, status) values (?, ?, ?, ?, ?);
+                insert into payments (booking_id, amount, currency, stripe_payment_id, status, payment_option) values (?, ?, ?, ?, ?, ?);
                 """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -37,6 +42,7 @@ public class PaymentRepository {
             ps.setString(3, payment.getCurrency() != null ? payment.getCurrency() : "USD");
             ps.setString(4, payment.getStripePaymentId());
             ps.setString(5, PaymentStatus.PENDING.name());
+            ps.setString(6, payment.getPaymentOption().name());
             return ps;
         }, keyHolder);
         payment.setId(((Number) keyHolder.getKeys().get("id")).longValue());
