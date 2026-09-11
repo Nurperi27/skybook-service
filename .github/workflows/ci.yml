@@ -1,0 +1,62 @@
+name: CI - Skybook Service
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: skybook_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 1234
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-internal 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        env:
+          DB_URL: jdbc:postgresql://localhost:5432/skybook_db
+          DB_USERNAME: postgres
+          DB_PASSWORD: 1234
+          JWT_SECRET: skybookSecretKey12345678901234567890123456789012
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+        run: mvn clean package -DskipTests
+
+      - name: Run tests
+        env:
+          DB_URL: jdbc:postgresql://localhost:5432/skybook_db
+          DB_USERNAME: postgres
+          DB_PASSWORD: 1234
+          JWT_SECRET: skybookSecretKey12345678901234567890123456789012
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+        run: mvn test
